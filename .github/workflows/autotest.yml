@@ -1,18 +1,22 @@
-name: "Auto Tag"
-on:
-  issues:
-    types: [opened, edited]
+name: "Continuous Integration"
 
-permissions:
-  issues: write
-  contents: read
+on: push
 
 jobs:
-  triage:
-    runs-on: ubuntu-latest
+  test:
+    runs-on: ubuntu-24.04
     steps:
-    - uses: actions/checkout@v1
-    - uses: damccorm/tag-ur-it@master
-      with:
-        repo-token: "${{ secrets.GITHUB_TOKEN }}"
-        configuration-path: "config/issue-rules.yml"
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12.4'
+      
+      - name: Install Dependencies
+        run: 
+          pip install -r requirements.txt
+
+      - name: Run Tests
+        run: pytest
